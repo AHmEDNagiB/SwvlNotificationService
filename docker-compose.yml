@@ -1,0 +1,43 @@
+version: '3'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - "2181:2181"
+    networks:
+      - messages
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+        - "9092:9092"
+    depends_on:
+        - zookeeper
+    links:
+        - zookeeper:zookeeper
+    environment:
+        KAFKA_ADVERTISED_HOST_NAME: kafka
+        KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    networks:
+      - messages
+  springboot-app:
+    build:
+      context: .
+      dockerfile: springDockerfile
+    ports:
+      - "8010:8010" # Forward the exposed port 8010 on the container to port 8010 on the host machine
+    restart: always
+    depends_on:
+      - kafka
+      - zookeeper
+    networks: # Networks to join (Services on the same network can communicate with each other using their name)
+      - messages
+    links:
+      - kafka:kafka
+
+networks:
+  messages:
+
