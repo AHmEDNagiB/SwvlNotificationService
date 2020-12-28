@@ -52,5 +52,5 @@ For running the project
 - download the repo
 - run the command  : **mvnw clean package -DskipTests && docker-compose up**
 
-~~you can run mvnw clean package && docker-compose up for not skipping unit test~~
+~~you can run: mvnw clean package && docker-compose up for not skipping unit test~~
 
